@@ -1,38 +1,36 @@
-const fs = require("fs");
-const path = require("path");
+console.log("running index");
+
 const inquirer = require("inquirer");
-const axios = require('axios');
-const generateHTML = require("./generateHTML");
-const api = require("./api");
-// const username = response
 
-//questions
-const questions = [
+ function inquire() {
+  inquirer
+  .prompt([
     {
-        type: "input",
-        name: "githubname",
-        message: "Enter your GitHub username."
+      type: "input",
+      name: "github",
+      message: "What is your GitHub username?" 
     },
-
     {
-        type: "list",
-        name: "backgroundcolor",
-        message: "Enter your favorite color.",
-        choices: ["blue", "purple", "scarlet", "lime", "orange", "yellow"]
+      type: "list",
+      name: "color",
+      message: "What is your favorite color?",
+      choices: ["red", "blue", "green", "pink"]
     }
-  
-];
+  ])
+    .then(async function (response){
 
 
-function init() {
-   inquirer
-        .prompt(questions).then(function (response){
-            console.log(response.githubname);
-            console.log(response.backgroundcolor);
-            var x = response.githubname;
-            var y = response.backgroundcolor;
-        })
-        axios.get()
-    }
+       module.exports = {
+        username: response.github,
+        color: response.color
+      };
+       require("./api");
 
-init();
+       require("./generateHTML");
+
+    })
+
+}
+      
+
+inquire();

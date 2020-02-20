@@ -1,3 +1,10 @@
+console.log("running generateHTML");
+const fs = require("fs");
+const puppeteer = require('puppeteer');
+const open = require("open");
+const path = require('path');
+
+
 const colors = {
   green: {
     wrapperBackground: "#E6E1C3",
@@ -25,7 +32,9 @@ const colors = {
   }
 };
 
-function generateHTML(data) {
+function generateHTML() {
+var index = require("./index");
+var api = require("./api");
   return `<!DOCTYPE html>
 <html lang="en">
    <head>
@@ -52,7 +61,7 @@ function generateHTML(data) {
          height: 100%;
          }
          .wrapper {
-         background-color: ${colors[data.color].wrapperBackground};
+         background-color: ${colors[index.color].wrapperBackground};
          padding-top: 100px;
          }
          body {
@@ -94,8 +103,8 @@ function generateHTML(data) {
          display: flex;
          justify-content: center;
          flex-wrap: wrap;
-         background-color: ${colors[data.color].headerBackground};
-         color: ${colors[data.color].headerColor};
+         background-color: ${colors[index.color].headerBackground};
+         color: ${colors[index.color].headerColor};
          padding: 10px;
          width: 95%;
          border-radius: 6px;
@@ -106,7 +115,7 @@ function generateHTML(data) {
          border-radius: 50%;
          object-fit: cover;
          margin-top: -75px;
-         border: 6px solid ${colors[data.color].photoBorderColor};
+         border: 6px solid ${colors[index.color].photoBorderColor};
          box-shadow: rgba(0, 0, 0, 0.3) 4px 1px 20px 4px;
          }
          .photo-header h1, .photo-header h2 {
@@ -149,8 +158,8 @@ function generateHTML(data) {
          .card {
            padding: 20px;
            border-radius: 6px;
-           background-color: ${colors[data.color].headerBackground};
-           color: ${colors[data.color].headerColor};
+           background-color: ${colors[index.color].headerBackground};
+           color: ${colors[index.color].headerColor};
            margin: 20px;
          }
          
@@ -170,5 +179,108 @@ function generateHTML(data) {
             zoom: .75; 
           } 
          }
-      </style>`
-        }
+      </style>
+   </head>
+
+
+   <body>
+      <div class="wrapper">
+         <div class="photo-header">
+            <img src="${api.avatar}" alt="Photo of ${api.name}" />
+            <h1>Hi!</h1>
+            <h2>
+            My name is ${api.name}!</h1>
+            <h5>${api.company ? `Currently @ ${api.company}`  : ""}</h5>
+            <nav class="links-nav">
+               ${
+                 api.location
+                   ? `<a class="nav-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/place/${
+                       api.location
+                     }"><i class="fas fa-location-arrow"></i> ${
+                       api.location
+                     }</a>`
+                   : ""
+               }
+               <a class="nav-link" target="_blank" rel="noopener noreferrer" href="${
+                 api.html_url
+               }"><i class="fab fa-github-alt"></i> GitHub</a>
+               ${
+                 api.blog
+                   ? `<a class="nav-link" target="_blank" rel="noopener noreferrer" href="${
+                       api.blog
+                     }"><i class="fas fa-rss"></i> Blog</a>`
+                   : ""
+               }
+            </nav>
+         </div>
+         <main>
+            <div class="container">
+            <div class="row">
+               <div class="col">
+                  <h3>${api.bio ? `${api.bio}` : ""}</h3>
+               </div>
+               </div>
+               <div class="row">
+               <div class="col">
+                  <div class="card">
+                    <h3>Public Repositories</h3>
+                    <h4>${api.public_repos}</h4>
+                  </div>
+               </div>
+                <div class="col">
+                <div class="card">
+                  <h3>Followers</h3>
+                  <h4>${api.followers}</h4>
+                </div>
+               </div>
+               </div>
+               <div class="row">
+               <div class="col">
+               <div class="card">
+                  <h3>GitHub Stars</h3>
+                  <h4>${api.stars}</h4>
+                  </div>
+               </div>
+                <div class="col">
+                <div class="card">
+                  <h3>Following</h3>
+                  <h4>${api.following}</h4>
+                  </div>
+               </div>
+               </div>
+            </div>
+         </main>
+      </div>
+   </body>
+</html>`;
+}
+
+generateHTML();
+
+fs.writeFile("log.html", generateHTML(), function(err) {
+  if (err) {
+    return console.log(err);
+  }
+  console.log("generateHTML() written to log.html.");
+
+}); 
+
+module.exports = generateHTML();
+module.exports = generateHTML;
+
+
+ 
+(async () => {
+  console.log("Converting HTML to PDF...");
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto(process.cwd() + './log.html', {waitUntil: 'networkidle2'});
+  await page.pdf({path: 'Profile.pdf', format: 'A4'});
+ 
+  await browser.close();
+  
+  console.log("Opening pdf in default browser...");
+  await open(path.join(process.cwd(), "Profile.pdf"));
+})();
+
+ 
