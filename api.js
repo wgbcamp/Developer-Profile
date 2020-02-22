@@ -1,59 +1,35 @@
 console.log("running api");
-
-var request = require("request");
-var index = require("./index");
 require("dotenv").config();
-var stars;
+var axios = require("axios");
+var index = require("./index");
+var req1 = axios.get('https://api.github.com/users/' + index.username + '?');
+var req2 = axios.get('https://api.github.com/users/' + index.username + '/starred?&per_page=1000');
 
 
-var options = {
-  url: 'https://api.github.com/users/' +  index.username + '?',
-  headers: {
-    'User-Agent': 'wgbcamp'
-  }
-};
+//asynchronous function that makes two get requests to get user information, exports info to generateHTML.js and starts file after get request is complete
+async function axiosTest() {
 
-var starCounter = {
-  url: 'https://api.github.com/users/' + index.username + '/starred?&per_page=1000',
-  headers: {
-    'User-Agent': 'wgbcamp'
-  }
-};
+axios.all([req1, req2])
+    .then(axios.spread(async function(req1res, req2res){
 
-function callback1(error, response, body) {
-  if (!error && response.statusCode == 200) {
-    var info = JSON.parse(body);
-    console.log(info);
-
-    module.exports = {
-      name: info.name,
-      company: info.company,
-      avatar: info.avatar_url,
-      location: info.location,
-      html_url: info.html_url,
-      blog: info.blog,
-      bio: info.bio,
-      public: info.public_repos,
-      followers: info.followers,
-      following: info.following
- }
-  }
+      module.exports = await {
+        nameExport: req1res.data.name,
+        companyExport: req1res.data.company,
+        avatarExport: req1res.data.avatar_url,
+        locationExport: req1res.data.location,
+        htmlExport: req1res.data.html_url,
+        blogExport: req1res.data.blog,
+        bioExport: req1res.data.bio,
+        publicExport: req1res.data.public_repos,
+        followersExport: req1res.data.followers,
+        followingExport: req1res.data.following,
+        starredExport: Object.keys(req2res.data).length
+      }
+  
+      await require("./generateHTML");
+    }));
+    
 }
 
-function callback2(error, response, body) {
-  if (!error && response.statusCode == 200) {
-    var info = JSON.parse(body);
-    stars = (Object.keys(info).length);
-    console.log(stars + " Starred Repos");
-    module.exports = {
-      stars: stars
-    }
-  }
-}
-
-
-
-request(options, callback1);
-request(starCounter, callback2);
-
+axiosTest();
 

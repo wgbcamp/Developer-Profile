@@ -1,5 +1,5 @@
 {
-  "name": "dev-profile",
+  "name": "dppackage",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -17,13 +17,11 @@
   },
   "homepage": "https://github.com/wgbcamp/Developer-Profile#readme",
   "dependencies": {
+    "axios": "^0.19.2",
     "dotenv": "^8.2.0",
-    "fs": "0.0.1-security",
-    "index": "^0.4.0",
     "inquirer": "^7.0.4",
     "open": "^7.0.2",
     "path": "^0.12.7",
-    "puppeteer": "^2.1.1",
-    "request": "^2.88.2"
+    "puppeteer": "^2.1.1"
   }
 }

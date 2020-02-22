@@ -2,6 +2,7 @@ console.log("running index");
 
 const inquirer = require("inquirer");
 
+//prompts user for github username and favorite color
  function inquire() {
   inquirer
   .prompt([
@@ -17,6 +18,7 @@ const inquirer = require("inquirer");
       choices: ["red", "blue", "green", "pink"]
     }
   ])
+  //exports responses and starts api.js
     .then(async function (response){
 
 
@@ -26,11 +28,7 @@ const inquirer = require("inquirer");
       };
        require("./api");
 
-       require("./generateHTML");
-
     })
-
 }
       
-
 inquire();

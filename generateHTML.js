@@ -32,9 +32,11 @@ const colors = {
   }
 };
 
+//html template that accepts exported variables
 function generateHTML() {
 var index = require("./index");
 var api = require("./api");
+console.log("generateHTML received..." + api.nameExport)
   return `<!DOCTYPE html>
 <html lang="en">
    <head>
@@ -186,28 +188,28 @@ var api = require("./api");
    <body>
       <div class="wrapper">
          <div class="photo-header">
-            <img src="${api.avatar}" alt="Photo of ${api.name}" />
+            <img src="${api.avatarExport}" alt="Photo of ${api.name}" />
             <h1>Hi!</h1>
             <h2>
-            My name is ${api.name}!</h1>
-            <h5>${api.company ? `Currently @ ${api.company}`  : ""}</h5>
+            My name is ${api.nameExport}!</h1>
+            <h5>${api.companyExport ? `Currently @ ${api.companyExport}`  : ""}</h5>
             <nav class="links-nav">
                ${
-                 api.location
+                 api.locationExport
                    ? `<a class="nav-link" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/place/${
-                       api.location
+                       api.locationExport
                      }"><i class="fas fa-location-arrow"></i> ${
-                       api.location
+                       api.locationExport
                      }</a>`
                    : ""
                }
                <a class="nav-link" target="_blank" rel="noopener noreferrer" href="${
-                 api.html_url
+                 api.htmlExport
                }"><i class="fab fa-github-alt"></i> GitHub</a>
                ${
-                 api.blog
+                 api.blogExport
                    ? `<a class="nav-link" target="_blank" rel="noopener noreferrer" href="${
-                       api.blog
+                       api.blogExport
                      }"><i class="fas fa-rss"></i> Blog</a>`
                    : ""
                }
@@ -217,20 +219,20 @@ var api = require("./api");
             <div class="container">
             <div class="row">
                <div class="col">
-                  <h3>${api.bio ? `${api.bio}` : ""}</h3>
+                  <h3>${api.bioExport ? `${api.bioExport}` : ""}</h3>
                </div>
                </div>
                <div class="row">
                <div class="col">
                   <div class="card">
                     <h3>Public Repositories</h3>
-                    <h4>${api.public_repos}</h4>
+                    <h4>${api.publicExport}</h4>
                   </div>
                </div>
                 <div class="col">
                 <div class="card">
                   <h3>Followers</h3>
-                  <h4>${api.followers}</h4>
+                  <h4>${api.followersExport}</h4>
                 </div>
                </div>
                </div>
@@ -238,13 +240,13 @@ var api = require("./api");
                <div class="col">
                <div class="card">
                   <h3>GitHub Stars</h3>
-                  <h4>${api.stars}</h4>
+                  <h4>${api.starredExport}</h4>
                   </div>
                </div>
                 <div class="col">
                 <div class="card">
                   <h3>Following</h3>
-                  <h4>${api.following}</h4>
+                  <h4>${api.followingExport}</h4>
                   </div>
                </div>
                </div>
@@ -255,8 +257,10 @@ var api = require("./api");
 </html>`;
 }
 
+//invokes function to return html template with user data
 generateHTML();
 
+//writes text to log.html file
 fs.writeFile("log.html", generateHTML(), function(err) {
   if (err) {
     return console.log(err);
@@ -265,11 +269,9 @@ fs.writeFile("log.html", generateHTML(), function(err) {
 
 }); 
 
-module.exports = generateHTML();
-module.exports = generateHTML;
 
 
- 
+//asynchronous function that converts log.html to Profile.pdf and launches default browser or new tab in browser showing new pdf file
 (async () => {
   console.log("Converting HTML to PDF...");
   const browser = await puppeteer.launch();
