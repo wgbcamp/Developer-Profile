@@ -1,1 +1,1 @@
-Application run with Node.js, which takes user input to find a github profile and convert the collected data into a readable format in a PDF document that automatically opens in the user's default browser after being saved to local storage.
+Application run with Node.js, which takes user input to find a github profile and converts the collected data into a readable format in a PDF document. The document automatically opens in the user's default browser after being saved to local storage.
